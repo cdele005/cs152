@@ -1,0 +1,56 @@
+program -> func_loop func | epsilon
+func_loop -> func_loop func | epsilon
+func -> FUNCTION ident SEMICOLON param local body
+
+param -> BEGIN_PARAMS declr_loop END_PARAMS
+local -> BEGIN_LOCALS declr_loop END_LOCALS
+body -> BEGIN_BODY stmt_loop stmt SEMICOLON END_BODY
+
+ident -> IDENT
+number -> NUMBER
+
+declr_loop -> declr_loop declr SEMICOLON | epsilon
+stmt_loop -> stmt_loop stmt SEMICOLON | epsilon
+
+declr -> comma_loop ident COLON declr2 INTEGER
+comma_loop -> comma_loop ident COMMA | epsilon
+
+declr2 -> ARRAY L_SQUARE_BRACKET number R_SQUARE-BRACKET OF | epsilon
+
+stmt -> var ASSIGN | if_stmt | while_stmt | do_stmt | read_stmt | write_stmt
+		| CONTINUE | RETURN expr
+		
+if_stmt -> IF bool_expr THEN stmt_loop stmt SEMICOLON else_stmt ENDIF
+else_stmt -> ELSE stmt_loop stmt SEMICOLON | epsilon
+
+while_stmt -> WHILE bool_expr BEGINLOOP stmt_loop stmt SEMICOLON ENDLOOP
+do_stmt -> DO BEGINLOOP stmt_loop stmt SEMICOLON ENDLOOP WHILE bool_expr
+read_stmt -> READ var_loop var
+write_stmt -> WRITE var_loop var
+
+var_loop -> var_loop var COMMA | epsilon
+var -> ident | ident L_SQUARE_BRACKET expr R_SQUARE-BRACKET
+
+bool_expr -> rae_loop rae_loop
+rae_loop -> rae_loop rae OR | epsilon
+rae -> re_loop re
+re_loop -> rae_loop re AND | epsilon
+
+re -> not re2
+not -> NOT | epsilon
+re2 -> expr comp expr | TRUE | FALSE | L_PAREN bool_expr R_PAREN
+
+comp -> EQ | NEQ | LT | GT | LTE | GTE
+
+expr -> me_loop me_loop
+me_loop -> me_loop me ADD | me_loop me SUB | epsilon
+me -> term_loop term
+
+term_loop -> term_loop term MULT | term_loop term DIV | term_loop term MOD | epsilon
+term -> SUB var | var | neg number | neg L_PAREN | term2
+term2 -> ident L_PAREN expr_loop R_PAREN
+
+neg -> SUB | epsilon
+
+expr_loop -> expr_loop2 expr | epsilon
+expr_loop2 -> expr_loop2 expr COMMA | epsilon

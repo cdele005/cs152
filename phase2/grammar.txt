@@ -1,0 +1,66 @@
+PROGRAM -> FUNCTION FUNCTION' | epsilon
+
+FUNCTION' -> FUNCTION FUNCTION' | epsilon
+FUNCTION -> function identifier ; 
+			beginparams DECLARATION endparams
+			beginlocals DECLARATION endlocals
+			beginbody STATEMENT ; STATEMENT' endbody 
+			| epsilon
+
+DECLARATION -> identifier DECLARATION' : DECLARATION'' number ;
+			   | epsilon
+
+DECLARATION' -> , identifier DECLARATION' | epsilon
+DECLARATION'' -> array [ number ] of | epsilon
+
+STATEMENT -> VAR := EXPRESSION
+			 | if BOOL-EXPR then STATEMENT ; STATEMENT' ELSE endif
+			 | while BOOL-EXPR beginloop STATEMENT ; STATEMENT' endloop
+			 | do beginloop STATEMENT ; STATEMENT' endloop while BOOL-EXPR
+			 | read VAR VAR'
+			 | write VAR VAR'
+			 | continue
+			 | return EXPRESSION 
+
+ELSE -> else STATEMENT STATEMENT' ; | epsilon
+
+STATEMENT' -> STATEMENT ; STATEMENT' | epsilon
+
+VAR' -> , VAR VAR' | epsilon
+
+BOOL-EXPR -> RELATION-AND-EXPR RELATION-AND-EXPR'
+
+RELATION-AND-EXPR -> RELATION-EXPR RELATION-EXPR'
+
+RELATION-AND-EXPR' -> or RELATION-AND-EXPR ELATION-AND-EXPR' | epsilon
+
+RELATION-EXPR' -> and RELATION-EXPR RELATION-EXPR' | epsilon
+
+RELATION-EXPR -> NOT NOT'
+				 
+NOT -> not | epsilon
+NOT' -> EXPRESSION COMP EXPRESSION | true | false | ( BOOL-EXPR )
+
+COMP -> == | <> | < | > | <=| >=
+
+EXPRESSION -> MULTIPLICATIVE-EXPR MULTIPLICATIVE-EXPR'
+
+MULTIPLICATIVE-EXPR' -> + MULTIPLICATIVE-EXPR MULTIPLICATIVE-EXPR'
+                        | - MULTIPLICATIVE-EXPR MULTIPLICATIVE-EXPR'
+						| epsilon
+						
+MULTIPLICATIVE-EXPR -> TERM TERM'
+
+TERM' -> * TERM TERM' | / TERM TERM' | % TERM TERM' | epsilon
+
+TERM -> NEGATE NEGATE' 
+        | identifier ( EXPRESSION' )
+
+NEGATE -> - | epsilon
+NEGATE' -> VAR | number | ( EXPRESSION )
+
+EXPRESSION' -> EXPRESSION EXPRESSION'' | epsilon
+EXPRESSION'' -> , EXPRESSION' | epsilon
+
+VAR -> identifier IDENTIFIER'
+IDENTIFIER' -> [ EXPRESSION ] | epsilon

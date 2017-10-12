@@ -1,0 +1,18 @@
+function main;
+beginparams
+ n : integer;
+  i, j, k: integer;
+  t : array [20] of integer;
+
+
+endparams
+
+beginlocals
+endlocals
+
+beginbody	## main program
+##	if a[0] == 0 then
+##		return 0;
+  ##      endif;
+return 0;
+endbody
